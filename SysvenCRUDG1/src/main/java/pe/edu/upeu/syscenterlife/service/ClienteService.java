@@ -3,19 +3,22 @@ package pe.edu.upeu.syscenterlife.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import pe.edu.upeu.syscenterlife.dao.ClienteDao;
 import pe.edu.upeu.syscenterlife.modelo.Cliente;
 
 @Service
 public class ClienteService {
+    
+    ClienteDao clienteDao=new ClienteDao();
 
     List<Cliente> listaCli = new ArrayList<>();
 
     public boolean saveEntidad(Cliente cliente) { //create
-        return this.listaCli.add(cliente);
+        return clienteDao.guardarCliente(cliente)==1?true:false;
     }
 
     public List<Cliente> listarEntidad() { //report
-        return listaCli;
+        return clienteDao.addCliente();
     }
 
     public Cliente buscarCliente(String dniruc) {

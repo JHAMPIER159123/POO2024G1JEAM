@@ -75,7 +75,5 @@ public class ConnS {
                 +rs.getString("nombre"));
         } catch (Exception e) {
         }
-        
-        
-    }
+     }
 }
