@@ -74,9 +74,9 @@ public class FormInicio extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tempus Sans ITC", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Tres en raya");
+        jLabel1.setText("TIC TAC TOE");
         panelFondo.add(jLabel1);
-        jLabel1.setBounds(0, 30, 420, 47);
+        jLabel1.setBounds(0, 30, 420, 48);
 
         txtJugador2.setFont(new java.awt.Font("Montserrat", 1, 28)); // NOI18N
         txtJugador2.setForeground(new java.awt.Color(202, 105, 220));
