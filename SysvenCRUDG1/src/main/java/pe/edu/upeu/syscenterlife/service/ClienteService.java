@@ -9,7 +9,7 @@ import pe.edu.upeu.syscenterlife.modelo.Cliente;
 @Service
 public class ClienteService {
     
-    ClienteDao clienteDao=new ClienteDao();
+    ClienteDao clienteDao=new ClienteeDao();
 
     List<Cliente> listaCli = new ArrayList<>();
 
