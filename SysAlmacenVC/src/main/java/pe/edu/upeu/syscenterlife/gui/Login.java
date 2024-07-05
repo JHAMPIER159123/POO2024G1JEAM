@@ -18,11 +18,13 @@ import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
+import pe.edu.upeu.syscenterlife.Modelo.Usuario;
 import pe.edu.upeu.syscenterlife.componentes.Button;
 import pe.edu.upeu.syscenterlife.componentes.FondoPanel;
 import pe.edu.upeu.syscenterlife.componentes.MyPasswordField;
 import pe.edu.upeu.syscenterlife.componentes.MyTextField;
 import pe.edu.upeu.syscenterlife.componentes.PanelBorder;
+import pe.edu.upeu.syscenterlife.servicio.UsuarioService;
 import pe.edu.upeu.syscenterlife.utils.MsgBox;
 import pe.edu.upeu.syscenterlife.utils.utilsX;
 
@@ -40,6 +42,9 @@ public class Login extends javax.swing.JFrame {
     ConfigurableApplicationContext ctx;
     @Autowired
     GUIMain gUIMain;
+    
+    @Autowired
+    UsuarioService usuarioService;
 
     public Login() {
         initComponents();
@@ -76,8 +81,11 @@ public class Login extends javax.swing.JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (txtUsername.getText().equals("admin")
-                        && String.valueOf(txtPassword.getPassword()).equals("admin")) {
+                
+                Usuario u=usuarioService.loginUsuario(txtUsername.getText(), 
+                        new String (txtPassword.getPassword()));
+                
+                if (u!=null) {
                     gUIMain.setContexto(ctx);
                     gUIMain.setVisible(true);
                     dispose();
