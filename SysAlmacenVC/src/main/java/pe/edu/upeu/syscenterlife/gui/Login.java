@@ -1,5 +1,6 @@
 package pe.edu.upeu.syscenterlife.gui;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -18,18 +20,23 @@ import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
+import pe.edu.upeu.syscenterlife.Modelo.SessionManager;
 import pe.edu.upeu.syscenterlife.Modelo.Usuario;
 import pe.edu.upeu.syscenterlife.componentes.Button;
 import pe.edu.upeu.syscenterlife.componentes.FondoPanel;
 import pe.edu.upeu.syscenterlife.componentes.MyPasswordField;
 import pe.edu.upeu.syscenterlife.componentes.MyTextField;
 import pe.edu.upeu.syscenterlife.componentes.PanelBorder;
+import pe.edu.upeu.syscenterlife.servicio.PerfilService;
 import pe.edu.upeu.syscenterlife.servicio.UsuarioService;
 import pe.edu.upeu.syscenterlife.utils.MsgBox;
 import pe.edu.upeu.syscenterlife.utils.utilsX;
 
+/**
+ *
+ * @author Datos
+ */
 @Component
-
 public class Login extends javax.swing.JFrame {
 
     JPanel panelGeneral;
@@ -38,6 +45,10 @@ public class Login extends javax.swing.JFrame {
     MyPasswordField txtPassword;
     MyTextField txtUsername = new MyTextField();
     Button loginButton;
+
+    Button registerButton;
+    Button guardarButton;
+
     utilsX obj = new utilsX();
     ConfigurableApplicationContext ctx;
     @Autowired
@@ -45,6 +56,10 @@ public class Login extends javax.swing.JFrame {
     
     @Autowired
     UsuarioService usuarioService;
+
+    @Autowired
+    PerfilService perfilService;
+
 
     public Login() {
         initComponents();
@@ -63,11 +78,13 @@ public class Login extends javax.swing.JFrame {
         } catch (Exception e) {
         }
         txtPassword = new MyPasswordField();
-        loginButton = new Button();
+                                    
         loginButton.setFont(new Font("sansserif", 1, 20));
         loginButton.setForeground(new Color(7, 164, 121));
         loginButton.setEffectColor(Color.yellow);
         loginButton.setText("Ingresar");
+        registerButton.setText("Registrar");
+
         initCustom();
         this.setContentPane(panelGeneral);
         this.setResizable(false);
@@ -75,6 +92,7 @@ public class Login extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(new Dimension(screenSize.width / 2, (screenSize.height - 36) / 2));
         this.setLocationRelativeTo(null);
+
     }
 
     public void addEventListeners() {
@@ -82,10 +100,13 @@ public class Login extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                Usuario u=usuarioService.loginUsuario(txtUsername.getText(), 
-                        new String (txtPassword.getPassword()));
+                Usuario u=usuarioService.loginUsuario(txtUsername.getText(),
+                        new String(txtPassword.getPassword()));
                 
                 if (u!=null) {
+                    SessionManager.getInstance().setUserId(u.getIdUsuario());
+                    SessionManager.getInstance().setUsuarioNombre(u.getuser());
+                    
                     gUIMain.setContexto(ctx);
                     gUIMain.setVisible(true);
                     dispose();
@@ -130,6 +151,90 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         });
+
+        
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("si entra");
+                panelBorder.removeAll();
+                initCustom2();
+                panelBorder.repaint();
+                panelBorder.validate();
+                
+                //new Prueba().setVisible(true);
+
+                /*Prueba mc = ctx.getBean(Prueba.class);
+                //mc.setContext(ctx);
+                mc.setVisible(true);*/
+                
+            }
+        });
+    }
+    public void addEventListeners2() {
+    
+        txtUsername.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtUsername.getText().equals("")) {
+                    txtUsername.setText("Coloca tu usuario");
+                    txtUsername.setForeground(Color.gray);
+                }
+            }
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (txtUsername.getText().equals("Coloca tu usuario")) {
+                    txtUsername.setText("");
+                    txtUsername.setForeground(Color.black);
+                }
+            }
+        });
+        txtPassword.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtPassword.getText().equals("")) {
+                    txtPassword.setText("Coloca tu clave");
+                    txtPassword.setForeground(Color.gray);
+                    txtPassword.setEchoChar((char) 0);
+                }
+            }
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (txtPassword.getText().equals("Coloca tu clave")) {
+                    txtPassword.setText("");
+                    txtPassword.setEchoChar('*');
+                    txtPassword.setForeground(Color.black);
+                }
+            }
+        });
+        
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("si entra aqui");
+                //Guardar
+                Usuario u=new Usuario();
+                u.setUser(txtUsername.getText());
+                u.setClave(new String(txtPassword.getPassword()));
+                u.setEstado("Activo");
+                u.setIdPerfil(perfilService.buscarEntidad(1L));
+                usuarioService.guardarEntidad(u);
+                panelBorder.removeAll();
+                initCustom();
+                panelBorder.repaint();
+                panelBorder.validate();
+                
+                //new Prueba().setVisible(true);
+
+                /*Prueba mc = ctx.getBean(Prueba.class);
+                //mc.setContext(ctx);
+                mc.setVisible(true);*/
+                
+            }
+        });
+
     }
 
     public void initCustom() {
@@ -153,11 +258,39 @@ public class Login extends javax.swing.JFrame {
         panelBorder.add(txtUsername, "w 80%");
         panelBorder.add(txtPassword, "w 80%");
         panelBorder.add(loginButton, "w 60%");
+        panelBorder.add(registerButton, "w 60%");
         fondoPanel.setPreferredSize(new Dimension(250, 360));
         panelGeneral.add(fondoPanel);
         panelGeneral.add(panelBorder);
         addEventListeners();
     }
+
+    public void initCustom2() {
+        panelBorder.setPreferredSize(new Dimension(250, 360));
+        txtUsername.setPrefixIcon(new ImageIcon(obj.getFile("img/user.png")));
+        txtUsername.setHint("User");
+        txtPassword.setPrefixIcon(new ImageIcon(obj.getFile("img/pass.png")));
+        txtPassword.setHint("Pass");
+        guardarButton.setText("Guardar");
+        txtUsername.setText("Coloca tu usuario");
+        txtUsername.setForeground(Color.gray);
+        txtPassword.setText("Coloca tu clave");
+        txtPassword.setForeground(Color.gray);
+        txtPassword.setEchoChar((char) 0);
+        panelBorder.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]25[]push"));
+        JLabel label = new JLabel("SysCenterlife");
+        label.setFont(new Font("sansserif", 1, 30));
+        label.setForeground(new Color(7, 164, 121));
+        panelBorder.add(label);
+        panelBorder.add(txtUsername, "w 80%");
+        panelBorder.add(txtPassword, "w 80%");
+        panelBorder.add(guardarButton, "w 60%");
+        fondoPanel.setPreferredSize(new Dimension(250, 360));
+        panelGeneral.add(fondoPanel);
+        panelGeneral.add(panelBorder);
+        addEventListeners2();
+    }
+
 
     public void setContexto(ConfigurableApplicationContext ctx) {
         this.ctx = ctx;

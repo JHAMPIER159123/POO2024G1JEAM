@@ -10,6 +10,8 @@ import pe.edu.upeu.syscenterlife.Modelo.Venta;  // Asumiendo que la clase Venta 
 
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
+
+    public boolean existsById(int idv);
     // Aquí puedes agregar métodos personalizados de consulta si es necesario
 }
 

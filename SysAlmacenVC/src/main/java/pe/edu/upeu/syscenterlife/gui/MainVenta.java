@@ -3,7 +3,10 @@ package pe.edu.upeu.syscenterlife.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +21,8 @@ import pe.com.syscenterlife.jtablecomp.ButtonsPanel;
 import pe.com.syscenterlife.jtablecomp.ButtonsRenderer;
 import pe.edu.upeu.syscenterlife.Modelo.SessionManager;
 import pe.edu.upeu.syscenterlife.Modelo.VentCarrito;
+import pe.edu.upeu.syscenterlife.Modelo.Venta;
+import pe.edu.upeu.syscenterlife.Modelo.VentaDetalle;
 import pe.edu.upeu.syscenterlife.servicio.ClienteService;
 import pe.edu.upeu.syscenterlife.servicio.ProductoService;
 import pe.edu.upeu.syscenterlife.servicio.UsuarioService;
@@ -137,7 +142,7 @@ public class MainVenta extends javax.swing.JPanel {
             JButton btnDel = be.getCellEditorValue().buttons.get(0);
             btnDel.addActionListener((ActionEvent e) -> {
                 int row = jTable2.convertRowIndexToModel(jTable2.getEditingRow());
-                Object o = jTable2.getModel().getValueAt(row, 2);
+                Object o = jTable2.getModel().getValueAt(row, 0);
                 System.out.println("dd:" + o.toString());
                 daoC.eliminarEntidad(Long.parseLong(String.valueOf(o)));
                 listarCarrito(dni);
@@ -145,9 +150,9 @@ public class MainVenta extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Elimianr: " + o);
             });
             jTable2.setModel(modelo);
-            txtPImporte.setText(String.valueOf(impoTotal));
+            txtPVenta.setText(String.valueOf(impoTotal));
             double pv = impoTotal / 1.18;
-            txtPVenta.setText(String.valueOf(Math.round(pv * 100.0) / 100.0));
+            txtPImporte.setText(String.valueOf(Math.round(pv * 100.0) / 100.0));
             txtIgv.setText(String.valueOf(Math.round((pv * 0.18) * 100.0) / 100.0));
 
         } catch (Exception e) {
@@ -217,7 +222,6 @@ public class MainVenta extends javax.swing.JPanel {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("DNI/RUC Cliente");
 
-        txtDniAutoComplete.setBackground(new java.awt.Color(255, 255, 255));
         txtDniAutoComplete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDniAutoCompleteActionPerformed(evt);
@@ -228,7 +232,6 @@ public class MainVenta extends javax.swing.JPanel {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Dirección");
 
-        txtDireccion.setBackground(new java.awt.Color(255, 255, 255));
         txtDireccion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDireccionActionPerformed(evt);
@@ -239,7 +242,6 @@ public class MainVenta extends javax.swing.JPanel {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Nombre/Razon Social:");
 
-        txtNombre.setBackground(new java.awt.Color(255, 255, 255));
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtNombreActionPerformed(evt);
@@ -248,7 +250,6 @@ public class MainVenta extends javax.swing.JPanel {
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("Add");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -310,7 +311,6 @@ public class MainVenta extends javax.swing.JPanel {
 
         jPanel2.setBackground(new java.awt.Color(255, 51, 51));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(0, 0, 153), null));
-        jPanel2.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Codigo:");
@@ -330,24 +330,9 @@ public class MainVenta extends javax.swing.JPanel {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("P.Total S/:");
 
-        txtStock.setBackground(new java.awt.Color(255, 255, 255));
-        txtStock.setForeground(new java.awt.Color(0, 0, 0));
-
-        txtCantidad.setBackground(new java.awt.Color(255, 255, 255));
-        txtCantidad.setForeground(new java.awt.Color(0, 0, 0));
-
-        txtPUnitario.setBackground(new java.awt.Color(255, 255, 255));
-        txtPUnitario.setForeground(new java.awt.Color(0, 0, 0));
-
-        txtPTotal.setBackground(new java.awt.Color(255, 255, 255));
-        txtPTotal.setForeground(new java.awt.Color(0, 0, 0));
-
-        txtCodigo.setBackground(new java.awt.Color(255, 255, 255));
-        txtCodigo.setForeground(new java.awt.Color(0, 0, 0));
-
         jButton1.setBackground(new java.awt.Color(255, 255, 255));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/data-add-icon.png"))); // NOI18N
         jButton1.setText("Add");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -355,8 +340,6 @@ public class MainVenta extends javax.swing.JPanel {
             }
         });
 
-        txtProducto.setBackground(new java.awt.Color(255, 255, 255));
-        txtProducto.setForeground(new java.awt.Color(0, 0, 0));
         txtProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtProductoActionPerformed(evt);
@@ -427,43 +410,35 @@ public class MainVenta extends javax.swing.JPanel {
         jPanel4.setBackground(new java.awt.Color(0, 255, 255));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("IGV:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Descuento:");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("P.Total S/:");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
         jLabel13.setText("P.Importe:");
 
-        txtPImporte.setBackground(new java.awt.Color(255, 255, 255));
         txtPImporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPImporteActionPerformed(evt);
             }
         });
 
-        txtDescuento.setBackground(new java.awt.Color(255, 255, 255));
         txtDescuento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDescuentoActionPerformed(evt);
             }
         });
 
-        txtPVenta.setBackground(new java.awt.Color(255, 255, 255));
         txtPVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPVentaActionPerformed(evt);
             }
         });
 
-        txtIgv.setBackground(new java.awt.Color(255, 255, 255));
         txtIgv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIgvActionPerformed(evt);
@@ -472,8 +447,13 @@ public class MainVenta extends javax.swing.JPanel {
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 0, 0));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/shop-cart-add-icon.png"))); // NOI18N
         jButton3.setText("R.Venta");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -525,7 +505,6 @@ public class MainVenta extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(153, 153, 255));
 
-        jTable2.setBackground(new java.awt.Color(255, 255, 255));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -634,6 +613,47 @@ public class MainVenta extends javax.swing.JPanel {
 
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        registrarVenta();
+    }//GEN-LAST:event_jButton3ActionPerformed
+    public void registrarVenta() {
+        Venta to = new Venta();
+        to.setDniruc(daoCli.buscarEntidad(txtDniAutoComplete.getText()));
+        to.setPreciobase(Double.parseDouble(txtPImporte.getText()));
+        to.setIgv(Double.parseDouble(txtIgv.getText()));
+        to.setPreciototal(Double.parseDouble(txtPVenta.getText()));
+        to.setIdUsuario(userSer.buscarEntidad(SessionManager.getInstance().getUserId()));
+        to.setSerie("V");
+        to.setTipoDoc("Factura");
+        Locale locale = new Locale("es", "es-PE");
+        LocalDateTime localDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss", locale);
+        String fechaFormateada = localDate.format(formatter);
+        System.out.println("Fecha:" + fechaFormateada);
+        to.setFechaGener(localDate.parse(fechaFormateada, formatter));
+        to.setNumDoc("00" + to.getIdVenta());
+        Venta idX = daoV.guardarEntidad(to);
+        List<VentCarrito> dd = listarCarrito(txtDniAutoComplete.getText());
+        if (idX.getIdVenta() != 0) {
+            for (VentCarrito car : dd) {
+                VentaDetalle vd = new VentaDetalle();
+                vd.setIdVenta(idX);
+                vd.setIdProducto(
+                        daoP.buscarEntidad(Long.parseLong(String.valueOf(car.getIdProducto())))
+                        );
+                vd.setCantidad(car.getCantidad());
+                vd.setDescuento(0);
+                vd.setPu(car.getPunitario());
+                vd.setSubtotal(car.getPtotal());
+                daoVD.guardarEntidad(vd);
+            }
+        }
+        daoC.deleteCarAll(txtDniAutoComplete.getText());
+        listarCarrito(txtDniAutoComplete.getText());
+        daoV.runReport1(Long.parseLong(String.valueOf(idX.getIdVenta())));
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -45,4 +45,16 @@ public class Usuario {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnoreProperties({"idUsuario"})
     public List<VentCarrito> ventCarritos;*/
+
+    public String getuser() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Long getIdusuario() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Long getIdUsuario() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
